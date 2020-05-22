@@ -1,0 +1,12 @@
+version: '2.0'
+services:
+  sdk:
+    build: .
+    volumes:
+      - .:/code
+    links:
+      - elasticsearch
+  elasticsearch:
+    image: amazon/opendistro-for-elasticsearch:1.7.0
+    environment:
+      discovery.type: single-node
