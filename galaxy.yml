@@ -1,0 +1,19 @@
+namespace: jiuka
+name: opendistro
+version: 1.0.0
+readme: README.md
+authors:
+  - Marius Rieder <marius.rieder@scs.ch>
+
+description: Manage OpenDistro Elasticsearch resources
+license:
+  - GPL-3.0-or-later
+
+tags:
+  - elasticsearch
+  - opendistro
+
+repository: https://github.com/jiuka/ansible_opendistro
+documentation: https://github.com/jiuka/ansible_opendistro/
+homepage: https://github.com/jiuka/ansible_opendistro/
+issues: https://github.com/jiuka/ansible_opendistro//issues
