@@ -3,6 +3,7 @@
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
+import ssl
 import json
 from ansible.module_utils.basic import AnsibleModule, env_fallback
 from ansible.module_utils.urls import Request
@@ -17,6 +18,9 @@ class BaseApi(object):
         self._module_name = module_name
 
         self._es_url = self._module.params.get('elasticsearch_url')
+
+        if not self._es_url:
+            module.fail_json(msg= "missing required arguments: elasticsearch_url")
 
         self._connect()
 
@@ -64,7 +68,7 @@ class BaseApi(object):
         self.request = Request(
             headers={'Accept': 'application/json'},
             http_agent=self._http_agent(),
-            url_username=self._module.params.get('elasticsearch_username', None),
+            url_username=self._module.params.get('elasticsearch_user', None),
             url_password=self._module.params.get('elasticsearch_password', None),
             client_cert=self._module.params.get('elasticsearch_cert', None),
             client_key=self._module.params.get('elasticsearch_key', None),
@@ -112,6 +116,11 @@ class BaseApi(object):
                 body = e.read()
             except AttributeError:
                 body = ''
+        except urllib_error.URLError as e:
+            self._module.fail_json(msg=str(e.reason),
+                                   method=method,
+                                   url=url,
+                                   data=data)
 
         try:
             data = json.loads(body)

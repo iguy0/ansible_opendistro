@@ -1,0 +1,41 @@
+name: ansible-test integration
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    container:
+      image: python:slim
+      volumes:
+        - esconfig:/usr/share/elasticsearch/config/
+
+    services:
+      elasticsearch:
+        image: amazon/opendistro-for-elasticsearch:1.7.0
+        ports:
+          - 9200:9200
+        env:
+          discovery.type: single-node
+
+        volumes:
+          - esconfig:/usr/share/elasticsearch/config/
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: collections/ansible_collections/jiuka/opendistro
+
+    - name: Install ansible
+      run: pip install ansible
+
+    - name: Test
+      run: ls -l /usr/share/elasticsearch/config/
+
+    - name: Ansible-Test Integration
+      run: ansible-test integration
+      working-directory: collections/ansible_collections/jiuka/opendistro
