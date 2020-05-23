@@ -16,18 +16,18 @@ class BaseApi(object):
         self._module = module
         self._module_name = module_name
 
-        self._url = self._module.params.get('elasticsearch_url')
+        self._es_url = self._module.params.get('elasticsearch_url')
 
         self._connect()
 
-    def put(self, ressource, name, data):
-        pass
+    def put(self, ressource, name=None, data=None):
+        return self._open('PUT', self._url(ressource, name), data=data)
 
-    def get(self, ressource, name):
-        pass
+    def get(self, ressource, name=None):
+        return self._open('GET', self._url(ressource, name))
 
-    def delete(self, ressource, name):
-        pass
+    def delete(self, ressource, name=None):
+        return self._open('DELETE', self._url(ressource, name))
 
     @classmethod
     def client_argument_spec(cls, spec=None):
@@ -64,16 +64,23 @@ class BaseApi(object):
         self._server_info()
 
     def _server_info(self):
+        code, data = self._open('GET', '{}/_nodes/_local/plugins'.format(self._es_url))
+
+        if code != 200 or 'nodes' not in data:
+            self._module.fail_json(msg='Error talking to Elasticsearch {}'.format(self._es_url),
+                                   http_code=code,
+                                   http_body=data)
+
         self.server = {}
 
     def _http_agent(self):
         return 'ansible-{}/jiuka.opendistro.{}'.format(self._module.ansible_version,
                                                        self._module_name)
 
-    def url(self, ressource, name=None):
+    def _url(self, ressource, name=None):
         if name:
-            return '{}/_opendistro/_{}/api/{}/{}'.format(self._url, self.PLUGIN, ressource, name)
-        return '{}/_opendistro/_{}/api/{}'.format(self._url, self.PLUGIN, ressource)
+            return '{}/_opendistro/_{}/api/{}/{}'.format(self._es_url, self.PLUGIN, ressource, name)
+        return '{}/_opendistro/_{}/api/{}'.format(self._es_url, self.PLUGIN, ressource)
 
     def _open(self, method, url, data=None):
         headers = None
@@ -95,7 +102,7 @@ class BaseApi(object):
                 body = ''
 
         try:
-            data = json.loads(data)
+            data = json.loads(body)
         except:
             data = body
 

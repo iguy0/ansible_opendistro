@@ -23,3 +23,16 @@ class MockModule:
         )
         self.params.update(kwargs)
         self.ansible_version = 'VERS'
+
+    def fail_json(self, msg, **kwargs):
+        pass
+
+import httpretty
+
+@pytest.fixture(autouse=True)
+def httpretty_setup():
+    httpretty.enable(False)
+    yield
+    httpretty.disable()
+    httpretty.reset()
+
