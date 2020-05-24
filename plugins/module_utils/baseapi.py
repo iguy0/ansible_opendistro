@@ -1,11 +1,13 @@
-#!/usr/bin/python
-# Copyright: (c) 2019, Marius Rieder <marius.rieder@scs.ch>
+# Copyright: (c) 2020, Marius Rieder <marius.rieder@scs.ch>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 
-import ssl
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+
 import json
-from ansible.module_utils.basic import AnsibleModule, env_fallback
+from ansible.module_utils.basic import env_fallback
 from ansible.module_utils.urls import Request
 import ansible.module_utils.six.moves.urllib.error as urllib_error
 
@@ -20,7 +22,7 @@ class BaseApi(object):
         self._es_url = self._module.params.get('elasticsearch_url')
 
         if not self._es_url:
-            module.fail_json(msg= "missing required arguments: elasticsearch_url")
+            module.fail_json(msg="missing required arguments: elasticsearch_url")
 
         self._connect()
 
@@ -80,23 +82,23 @@ class BaseApi(object):
         self._server_info()
 
     def _server_info(self):
-        code, data = self._open('GET', '{}/_nodes/_local/plugins'.format(self._es_url))
+        code, data = self._open('GET', '{0}/_nodes/_local/plugins'.format(self._es_url))
 
         if code != 200 or 'nodes' not in data:
-            self._module.fail_json(msg='Error talking to Elasticsearch {}'.format(self._es_url),
+            self._module.fail_json(msg='Error talking to Elasticsearch {0}'.format(self._es_url),
                                    http_code=code,
                                    http_body=data)
 
         self.server = {}
 
     def _http_agent(self):
-        return 'ansible-{}/jiuka.opendistro.{}'.format(self._module.ansible_version,
-                                                       self._module_name)
+        return 'ansible-{0}/jiuka.opendistro.{1}'.format(self._module.ansible_version,
+                                                         self._module_name)
 
     def _url(self, ressource, name=None):
         if name:
-            return '{}/_opendistro/_{}/api/{}/{}'.format(self._es_url, self.PLUGIN, ressource, name)
-        return '{}/_opendistro/_{}/api/{}'.format(self._es_url, self.PLUGIN, ressource)
+            return '{0}/_opendistro/_{1}/api/{2}/{3}'.format(self._es_url, self.PLUGIN, ressource, name)
+        return '{0}/_opendistro/_{1}/api/{2}'.format(self._es_url, self.PLUGIN, ressource)
 
     def _open(self, method, url, data=None):
         headers = None
@@ -124,7 +126,7 @@ class BaseApi(object):
 
         try:
             data = json.loads(body)
-        except:
+        except Exception:
             data = body
 
         return code, data

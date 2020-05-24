@@ -1,7 +1,11 @@
 #!/usr/bin/python
-
-# Copyright: (c) 2019, Marius Rieder <marius.rieder@scs.ch>
+# Copyright: (c) 2020, Marius Rieder <marius.rieder@scs.ch>
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
+
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
 
 ANSIBLE_METADATA = {
     'metadata_version': '1.1',
@@ -10,16 +14,41 @@ ANSIBLE_METADATA = {
 }
 
 DOCUMENTATION = '''
+module: user_info
+short_description: Return user information.
+version_added: "1.0.0"
+description:
+    - Return user information.
+options:
+    name:
+        description:
+            - Name of the user to fetch informations for.
+        type: str
+        required: true
+        aliases: [ user ]
+extends_documentation_fragment:
+    - jiuka.opendistro.baseapi
+author:
+    - Marius Rieder (@jiuks)
 '''
 
 EXAMPLES = '''
+- name: Get admin
+  jiuka.opendistor.user_info:
+    name: admin
 '''
 
 RETURN = '''
+user:
+    description: Informations about the user.
+    returned: success
+    type: dict
 '''
+
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.jiuka.opendistro.plugins.module_utils.security import SecurityApi
+
 
 def main():
     # define available arguments/parameters a user can pass to the module
@@ -63,6 +92,7 @@ def main():
     # in the event of a successful module execution, you will want to
     # simple AnsibleModule.exit_json(), passing the key/value results
     module.exit_json(**result)
+
 
 if __name__ == '__main__':
     main()

@@ -53,9 +53,9 @@ jobs:
           path: collections/ansible_collections/jiuka/opendistro
 
       - name: Install ansible
-        run: pip install ansible
+        run: pip install ansible pycodestyle pylint voluptuous yamllint
 
       - name: Ansible-Test Sanity
-        run: ansible-test sanity
+        run: ansible-test sanity --exclude tests/ --exclude .github/ --exclude plugins/doc_fragments/
         working-directory: collections/ansible_collections/jiuka/opendistro
 
