@@ -6,7 +6,7 @@ from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
 
-from ansible_collections.jiuka.opendistro.plugins.module_utils.baseapi import BaseApi
+from ansible_collections.jiuka.opendistro.plugins.module_utils.basic import BaseApi
 
 
 class SecurityApi(BaseApi):

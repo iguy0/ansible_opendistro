@@ -46,15 +46,15 @@ user:
 '''
 
 
-from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.jiuka.opendistro.plugins.module_utils.basic import OpenDistroModule
 from ansible_collections.jiuka.opendistro.plugins.module_utils.security import SecurityApi
 
 
 def main():
     # define available arguments/parameters a user can pass to the module
-    module_args = SecurityApi.client_argument_spec(dict(
+    module_args = dict(
         name=dict(type='str', required=True, aliases=['user']),
-    ))
+    )
 
     # seed the result dict in the object
     result = dict(
@@ -62,9 +62,9 @@ def main():
     )
 
     # Setup AnsibleModule
-    module = AnsibleModule(
+    module = OpenDistroModule(
         argument_spec=module_args,
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     # Parameters

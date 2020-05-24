@@ -7,37 +7,14 @@ __metaclass__ = type
 
 
 import json
-from ansible.module_utils.basic import env_fallback
+from ansible.module_utils.basic import AnsibleModule, env_fallback
 from ansible.module_utils.urls import Request
 import ansible.module_utils.six.moves.urllib.error as urllib_error
 
 
-class BaseApi(object):
-    PLUGIN = None
-
-    def __init__(self, module, module_name):
-        self._module = module
-        self._module_name = module_name
-
-        self._es_url = self._module.params.get('elasticsearch_url')
-
-        if not self._es_url:
-            module.fail_json(msg="missing required arguments: elasticsearch_url")
-
-        self._connect()
-
-    def put(self, ressource, name=None, data=None):
-        return self._open('PUT', self._url(ressource, name), data=data)
-
-    def get(self, ressource, name=None):
-        return self._open('GET', self._url(ressource, name))
-
-    def delete(self, ressource, name=None):
-        return self._open('DELETE', self._url(ressource, name))
-
-    @classmethod
-    def client_argument_spec(cls, spec=None):
-        arg_spec = dict(
+class OpenDistroModule(AnsibleModule):
+    def __init__(self, argument_spec, **kwargs):
+        argument_spec.update(dict(
             elasticsearch_url=dict(type='str',
                                    required=False,
                                    fallback=(env_fallback, ['ELASTICSEARCH_URL'])),
@@ -61,10 +38,39 @@ class BaseApi(object):
                                 required=False,
                                 default=True,
                                 fallback=(env_fallback, ['ELASTICSEARCH_VALIDATE_CERTS'])),
-        )
-        if spec:
-            arg_spec.update(spec)
-        return arg_spec
+        ))
+        required_together = kwargs.get('required_together', [])
+        required_together += [
+            ['elasticsearch_user', 'elasticsearch_password'],
+            ['elasticsearch_cert', 'elasticsearch_key'],
+        ]
+        kwargs['required_together'] = required_together
+
+        super().__init__(argument_spec, **kwargs)
+
+        if not self.params['elasticsearch_url']:
+            self.fail_json(msg="missing required arguments: elasticsearch_url")
+
+
+class BaseApi(object):
+    PLUGIN = None
+
+    def __init__(self, module, module_name):
+        self._module = module
+        self._module_name = module_name
+
+        self._es_url = self._module.params.get('elasticsearch_url')
+
+        self._connect()
+
+    def put(self, ressource, name=None, data=None):
+        return self._open('PUT', self._url(ressource, name), data=data)
+
+    def get(self, ressource, name=None):
+        return self._open('GET', self._url(ressource, name))
+
+    def delete(self, ressource, name=None):
+        return self._open('DELETE', self._url(ressource, name))
 
     def _connect(self):
         self.request = Request(

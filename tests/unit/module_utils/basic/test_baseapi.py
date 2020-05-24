@@ -1,6 +1,6 @@
 from httpretty import HTTPretty
 import pytest
-from ansible_collections.jiuka.opendistro.plugins.module_utils.baseapi import BaseApi
+from ansible_collections.jiuka.opendistro.plugins.module_utils.basic import BaseApi
 
 
 @pytest.fixture

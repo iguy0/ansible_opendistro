@@ -5,3 +5,12 @@
     elasticsearch_user: admin
     elasticsearch_password: admin
     validate_certs: false
+
+- name: Get admin with cert auth
+  jiuka.opendistro.user_info:
+    name: admin
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_cert: /user/share/elasticsearch/config/kirk.pem
+    elasticsearch_key: /user/share/elasticsearch/config/kirk-key.pem
+    validate_certs: false
+
