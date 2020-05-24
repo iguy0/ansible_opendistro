@@ -1,4 +1,4 @@
-- name: Get admin
+- name: Get admin 
   jiuka.opendistro.user_info:
     name: admin
     elasticsearch_url: https://elasticsearch:9200
