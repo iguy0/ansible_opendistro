@@ -23,17 +23,17 @@ options:
         description:
             - Path to the PEM encoded X.509 Cert to use as client certificate.
         required: false
-        type: str
+        type: path
     elasticsearch_key:
         description:
             - Path to the PEM encoded client key.
         required: false
-        type: str
+        type: path
     elasticsearch_cacert:
         description:
             - Path to the PEM encoded CA cert.
         required: false
-        type: str
+        type: path
     validate_certs:
         description:
             - Allows connection when SSL certificates are not valid. Set to C(false) when certificates are not trusted.

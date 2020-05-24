@@ -5,8 +5,8 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
-
 import json
+import os.path
 from ansible.module_utils.basic import AnsibleModule, env_fallback
 from ansible.module_utils.urls import Request
 import ansible.module_utils.six.moves.urllib.error as urllib_error
@@ -25,13 +25,13 @@ class OpenDistroModule(AnsibleModule):
                                         required=False,
                                         no_log=True,
                                         fallback=(env_fallback, ['ELASTICSEARCH_PASSWORD'])),
-            elasticsearch_cert=dict(type='str',
+            elasticsearch_cert=dict(type='path',
                                     required=False,
                                     fallback=(env_fallback, ['ELASTICSEARCH_CERT'])),
-            elasticsearch_key=dict(type='str',
+            elasticsearch_key=dict(type='path',
                                    required=False,
                                    fallback=(env_fallback, ['ELASTICSEARCH_KEY'])),
-            elasticsearch_cacert=dict(type='str',
+            elasticsearch_cacert=dict(type='path',
                                       required=False,
                                       fallback=(env_fallback, ['ELASTICSEARCH_CACERT'])),
             validate_certs=dict(type='bool',
@@ -50,6 +50,13 @@ class OpenDistroModule(AnsibleModule):
 
         if not self.params['elasticsearch_url']:
             self.fail_json(msg="missing required arguments: elasticsearch_url")
+
+        for param in ['elasticsearch_cert', 'elasticsearch_key', 'elasticsearch_cacert']:
+            if not self.params.get(param, None):
+                continue
+            if os.path.exists(self.params[param]):
+                continue
+            self.fail_json(msg='{0} "{1}" not found'.format(param, self.params[param]))
 
 
 class BaseApi(object):
