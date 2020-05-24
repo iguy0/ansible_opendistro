@@ -40,3 +40,22 @@ jobs:
     - name: Ansible-Test Integration
       run: ansible-test integration
       working-directory: collections/ansible_collections/jiuka/opendistro
+
+  sanity:
+    runs-on: ubuntu-latest
+
+    container:
+        image: python:slim
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: collections/ansible_collections/jiuka/opendistro
+
+      - name: Install ansible
+        run: pip install ansible
+
+      - name: Ansible-Test Sanity
+        run: ansible-test sanity
+        working-directory: collections/ansible_collections/jiuka/opendistro
+
