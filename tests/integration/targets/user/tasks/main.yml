@@ -11,7 +11,7 @@
 - name: Create user
   jiuka.opendistro.user:
     name: foobar
-    password: foobar
+    password_hash: '$2a$12$AMTOYfh3q3DvdXQQNeiROeOhneR2YQ3wiI0VgXtcJyrCmZ96G7yRq'
     elasticsearch_url: https://elasticsearch:9200
     elasticsearch_user: admin
     elasticsearch_password: admin
@@ -26,7 +26,7 @@
 - name: Create user again
   jiuka.opendistro.user:
     name: foobar
-    password: foobar
+    password_hash: '$2a$12$AMTOYfh3q3DvdXQQNeiROeOhneR2YQ3wiI0VgXtcJyrCmZ96G7yRq'
     elasticsearch_url: https://elasticsearch:9200
     elasticsearch_user: admin
     elasticsearch_password: admin
@@ -41,7 +41,7 @@
 - name: Update Password
   jiuka.opendistro.user:
     name: foobar
-    password: foobar
+    password_hash: '$2a$12$AMTOYfh3q3DvdXQQNeiROeOhneR2YQ3wiI0VgXtcJyrCmZ96G7yRq'
     update_password: yes
     elasticsearch_url: https://elasticsearch:9200
     elasticsearch_user: admin
