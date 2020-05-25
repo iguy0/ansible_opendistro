@@ -76,6 +76,9 @@ class BaseApi(object):
     def get(self, ressource, name=None):
         return self._open('GET', self._url(ressource, name))
 
+    def patch(self, ressource, name=None, data=None):
+        return self._open('PATCH', self._url(ressource, name), data=data)
+
     def delete(self, ressource, name=None):
         return self._open('DELETE', self._url(ressource, name))
 
@@ -143,3 +146,32 @@ class BaseApi(object):
             data = body
 
         return code, data
+
+
+def create_patch(data, path, value):
+    if value is None:
+        return None
+
+    old_value = data.get(path, None)
+    if 'sort' in dir(value):
+        value.sort()
+    if 'sort' in dir(old_value):
+        old_value.sort()
+
+    if old_value == value:
+        return None
+
+    if old_value:
+        return dict(op='replace',
+                    path="%s" % path,
+                    value=value)
+    else:
+        return dict(op='add',
+                    path=path,
+                    value=value)
+
+
+def apply_patch(data, patch):
+    for line in patch:
+        data[line['path']] = line['value']
+    return data
