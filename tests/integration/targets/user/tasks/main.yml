@@ -1,0 +1,144 @@
+- name: Ensure user does not exist
+  jiuka.opendistro.user:
+    name: foobar
+    state: absent
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: result
+
+- name: Create user
+  jiuka.opendistro.user:
+    name: foobar
+    password: foobar
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: result
+
+- name: Assert user has been created
+  assert:
+    that:
+      - result is changed
+
+- name: Create user again
+  jiuka.opendistro.user:
+    name: foobar
+    password: foobar
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: result
+
+- name: Assert user has not changed
+  assert:
+    that:
+      - result is not changed
+
+- name: Update Password
+  jiuka.opendistro.user:
+    name: foobar
+    password: foobar
+    update_password: yes
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: result
+
+- assert:
+    that:
+      - result is changed
+
+- name: Update roles
+  jiuka.opendistro.user:
+    name: foobar
+    roles:
+      - foo
+      - bar
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: result
+
+- assert:
+    that:
+      - result is changed
+
+- name: Update roles again
+  jiuka.opendistro.user:
+    name: foobar
+    roles:
+      - bar
+      - foo
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: result
+
+- assert:
+    that:
+      - result is not changed
+
+- name: Update attributes
+  jiuka.opendistro.user:
+    name: foobar
+    attributes:
+      foo: bar
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: result
+
+- assert:
+    that:
+      - result is changed
+
+- name: Update attributes again
+  jiuka.opendistro.user:
+    name: foobar
+    attributes:
+      foo: bar
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: result
+
+- assert:
+    that:
+      - result is not changed
+
+- name: Delete user
+  jiuka.opendistro.user:
+    name: foobar
+    state: absent
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: result
+
+- assert:
+    that:
+      - result is changed
+
+- name: Delete user again
+  jiuka.opendistro.user:
+    name: foobar
+    state: absent
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: result
+
+- assert:
+    that:
+      - result is not changed
