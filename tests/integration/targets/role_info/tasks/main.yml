@@ -1,0 +1,12 @@
+- name: Get admin 
+  jiuka.opendistro.role_info:
+    name: readall
+    elasticsearch_url: https://elasticsearch:9200
+    elasticsearch_user: admin
+    elasticsearch_password: admin
+    validate_certs: false
+  register: role
+
+- debug:
+    msg: '{{ role }}'
+
