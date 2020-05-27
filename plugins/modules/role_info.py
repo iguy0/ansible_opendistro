@@ -84,7 +84,7 @@ role:
                     description: Allowed actions.
                     type: list
                     elements: str
-        tenant_permissions
+        tenant_permissions:
             description: Tenant permissions of the role.
             type: list
             elements: dict
